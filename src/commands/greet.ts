@@ -4,12 +4,12 @@ import { Command } from "../types";
 const command : Command = {
     name: "greet",
     execute: (message, args) => {
-        let toGreet = message.mentions.members?.first()
-        message.channel.send(`Hello there ${toGreet ? toGreet.user.username : message.member?.user.username}!`)
+        let toGreetList = message.mentions.members
+        message.channel.send(`Hello there ${toGreetList?.size ? toGreetList.map((user) => {return "<@" + user.user.id + ">"}).join(", ") : "<@" + message.member?.user.id + ">"} !`)
     },
     cooldown: 10,
-    aliases: ["sayhello"],
+    aliases: [],
     permissions: ["Administrator", PermissionFlagsBits.ManageEmojisAndStickers] // to test
 }
 
-export default command
+export default command 
