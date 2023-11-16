@@ -2,7 +2,7 @@ import { GuildMember, PermissionFlagsBits } from "discord.js";
 import { Command } from "../types";
 const command : Command = {
     name: "whoIsBot",
-    execute: (message, args) => {
+    execute: (message) => {
         let toBotList = message.mentions.members
         if(toBotList?.size === 0){
             message.channel.send("Gib einen User ein du Hund!");

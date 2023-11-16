@@ -3,7 +3,7 @@ import { Command } from "../types";
 import axios from "axios";
 const command: Command = {
   name: "cringe",
-  execute: async (message, args) => {
+  execute: async (message) => {
     try {
       const response = await axios.get("https://api.waifu.pics/sfw/cringe");
       const imageUrl = response.data.url;
@@ -29,9 +29,7 @@ const command: Command = {
       }
       message.channel.send({ embeds: [embed] });
     } catch (error) {
-      message.channel.send(
-        "An error occurred while fetching the cringe image."
-      );
+      message.channel.send("An error occurred while fetching the cringe image.");
     }
   },
   cooldown: 0,
