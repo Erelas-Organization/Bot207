@@ -9,6 +9,6 @@ const command : Command = {
     },
     cooldown: 0,
     aliases: [],
-    permissions: ["Administrator", PermissionFlagsBits.ManageEmojisAndStickers]
+    permissions: []
 }
 export default command 
