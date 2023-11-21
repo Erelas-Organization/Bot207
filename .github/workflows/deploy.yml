@@ -17,16 +17,14 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    - name: Deploy to Staging server
-      uses: easingthemes/ssh-deploy@main
+    - name: deploy using SSH
+      uses: appleboy/ssh-action@v1.0.0
       with:
-        SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-        ARGS: "-rlgoDzvc -i"
-        SOURCE: "dist/"
-        REMOTE_HOST: ${{ secrets.HOST }}
-        REMOTE_USER: ${{ secrets.USERNAME }}
-        EXCLUDE: "/dist/, /node_modules/"
-        SCRIPT_BEFORE: |
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: 22
+        script: |
           cd ~/home/runner/Bot207/
           git pull origin main
           git status
