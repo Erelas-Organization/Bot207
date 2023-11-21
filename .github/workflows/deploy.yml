@@ -25,7 +25,6 @@ jobs:
         SOURCE: "dist/"
         REMOTE_HOST: ${{ secrets.HOST }}
         REMOTE_USER: ${{ secrets.USERNAME }}
-        TARGET: ${{ secrets.REMOTE_TARGET }}
         EXCLUDE: "/dist/, /node_modules/"
         SCRIPT_BEFORE: |
           cd ~/home/runner/Bot207/
