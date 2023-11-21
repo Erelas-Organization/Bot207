@@ -27,7 +27,7 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: 22
         script: |
-          cd ~/home/runner/Bot207/
+          cd /home/${{ secrets.USERNAME }}/Bot207/
           git pull origin main
           git status
           npm install --only=prod
