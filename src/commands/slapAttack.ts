@@ -1,10 +1,10 @@
-import {PermissionFlagsBits, EmbedBuilder } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import { Command } from "../types";
 import axios from "axios";
 const command : Command = {
     name: "slapattack",
     execute: async (message) => {
-      let data = {
+      const data = {
         exclude: [""],
       }
         try {

@@ -1,30 +1,40 @@
-import { Client, GatewayIntentBits, Collection, ActivityType} from "discord.js";
-const { Guilds, MessageContent, GuildMessages, GuildMembers } = GatewayIntentBits
-const client = new Client({intents:[Guilds, MessageContent, GuildMessages, GuildMembers]})
+import { Client, GatewayIntentBits, Collection, ActivityType } from "discord.js";
+const { Guilds, MessageContent, GuildMessages, GuildMembers } = GatewayIntentBits;
+const client = new Client({ intents: [Guilds, MessageContent, GuildMessages, GuildMembers] });
 import { Command, SlashCommand } from "./types";
 import { config } from "dotenv";
-import { readdirSync } from "fs";
+import { promises as fsPromises } from "fs";
 import { join } from "path";
-config()
+config();
 
-client.slashCommands = new Collection<string, SlashCommand>()
-client.commands = new Collection<string, Command>()
-client.cooldowns = new Collection<string, number>()
+client.slashCommands = new Collection<string, SlashCommand>();
+client.commands = new Collection<string, Command>();
+client.cooldowns = new Collection<string, number>();
 
-const handlersDir = join(__dirname, "./handlers")
-readdirSync(handlersDir).forEach(handler => {
-    if (!handler.endsWith(".js")) return;
-    require(`${handlersDir}/${handler}`)(client)
-})
+const handlersDir = join(__dirname, "./handlers");
 
-client.on('ready', (c) => {
-    if(client.user){
+async function loadHandlers() {
+    const handlers = await fsPromises.readdir(handlersDir);
+    await Promise.all(handlers.map(async handler => {
+        if (handler.endsWith(".js")) {
+            const handlerPath = join(handlersDir, handler);
+            const importedHandler = await import(handlerPath);
+            importedHandler.default(client);
+        }
+    }));
+}
+
+client.on('ready', () => {
+    if (client.user) {
         client.user.setActivity({
             name: `With Your Mom`, 
-            type: ActivityType.Streaming }
-          );
+            type: ActivityType.Streaming 
+        });
     }
-})
+});
 
-
-client.login(process.env.TOKEN)
+loadHandlers().then(() => {
+    client.login(process.env.TOKEN);
+}).catch(error => {
+    console.error("Handler loading error:", error);
+});

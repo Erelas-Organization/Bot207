@@ -1,4 +1,4 @@
-import { PermissionFlagsBits, EmbedBuilder } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import { Command } from "../types";
 import axios from "axios";
 const command: Command = {
@@ -7,16 +7,16 @@ const command: Command = {
     try {
       const response = await axios.get("https://api.waifu.pics/sfw/cringe");
       const imageUrl = response.data.url;
-      let author = message.author;
-      let mentionedUser = message.mentions.members?.first();
-      let rndDescriptions:string[] = [
+      const author = message.author;
+      const mentionedUser = message.mentions.members?.first();
+      const rndDescriptions:string[] = [
       `<@${author?.id}> is cringing at <@${mentionedUser?.user.id}>`, 
       `Why are u so cringe <@${mentionedUser?.user.id}> ?`, 
       `<@${author?.id}> finds <@${mentionedUser?.user.id}> incredibly cringe`,
       `Watching <@${mentionedUser?.user.id}> being cringe is my daily entertainment.`,
       `Vallah Bilah <@${mentionedUser?.user.id}> mach nicht diesen. `
     ];
-      let randomDescription = rndDescriptions[Math.floor(Math.random() * rndDescriptions.length)];
+      const randomDescription = rndDescriptions[Math.floor(Math.random() * rndDescriptions.length)];
       let embed: EmbedBuilder;
       if (mentionedUser) {
         embed = new EmbedBuilder()

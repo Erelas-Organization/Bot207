@@ -1,4 +1,4 @@
-import {PermissionFlagsBits, EmbedBuilder } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import { Command } from "../types";
 import axios from "axios";
 const command : Command = {
@@ -7,8 +7,8 @@ const command : Command = {
       try {
             const response = await axios.get("https://api.waifu.pics/sfw/slap");
             const imageUrl = response.data.url;
-            let author = message.author;
-            let mentionedUser = message.mentions.members?.first();
+            const author = message.author;
+            const mentionedUser = message.mentions.members?.first();
             let embed: EmbedBuilder;
             if(mentionedUser){
               embed = new EmbedBuilder()

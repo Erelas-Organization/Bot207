@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 import { BotEvent } from "../types";
 
 const stfuEvent: BotEvent = {
