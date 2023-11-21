@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Collection, PermissionFlagsBits,} from "discord.js";
+import { Client, GatewayIntentBits, Collection, ActivityType} from "discord.js";
 const { Guilds, MessageContent, GuildMessages, GuildMembers } = GatewayIntentBits
 const client = new Client({intents:[Guilds, MessageContent, GuildMessages, GuildMembers]})
 import { Command, SlashCommand } from "./types";
@@ -16,5 +16,15 @@ readdirSync(handlersDir).forEach(handler => {
     if (!handler.endsWith(".js")) return;
     require(`${handlersDir}/${handler}`)(client)
 })
+
+client.on('ready', (c) => {
+    if(client.user){
+        client.user.setActivity({
+            name: `With Your Mom`, 
+            type: ActivityType.Streaming }
+          );
+    }
+})
+
 
 client.login(process.env.TOKEN)

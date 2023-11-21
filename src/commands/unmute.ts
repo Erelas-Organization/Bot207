@@ -1,11 +1,11 @@
 import { Command } from "../types";
 const command : Command = {
-    name: "stfu",
+    name: "unmute",
     execute: (message) => {
-        let userToMute = message.mentions.members?.first()
+        let userToUnmute = message.mentions.members?.first()
         let roleMuted = message.guild?.roles.cache.find(role => role.name === "Muted")  
-        if(userToMute && roleMuted){
-            userToMute.roles.add(roleMuted).then(() => {message.channel.send("You are muted" +  "<@" + userToMute?.user.id + ">")})
+        if(userToUnmute && roleMuted){
+            userToUnmute.roles.remove(roleMuted).then(() => {message.channel.send("You are unmuted" +  "<@" + userToUnmute?.user.id + ">")})
         }
     },
     cooldown: 0,
