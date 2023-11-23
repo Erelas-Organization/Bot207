@@ -1,6 +1,6 @@
 import { Client, GatewayIntentBits, Collection, ActivityType} from "discord.js";
-const { Guilds, MessageContent, GuildMessages, GuildMembers } = GatewayIntentBits
-const client = new Client({intents:[Guilds, MessageContent, GuildMessages, GuildMembers]})
+const { Guilds, MessageContent, GuildMessages, GuildMembers, GuildMessageReactions } = GatewayIntentBits
+const client = new Client({intents:[Guilds, MessageContent, GuildMessages, GuildMembers, GuildMessageReactions]})
 import { Command, SlashCommand } from "./types";
 import { config } from "dotenv";
 import { readdirSync } from "fs";
