@@ -25,6 +25,7 @@ const command: SlashCommand = {
     try {
         const { track } = await player.play(channel, query, {
             nodeOptions: {
+                volume: 20,
                 metadata: interaction
             }
         });

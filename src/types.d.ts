@@ -1,4 +1,5 @@
 import { SlashCommandBuilder, Collection, PermissionResolvable, Message, AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js"
+import { GuildQueueEvents } from "discord-player";
 import mongoose from "mongoose"
 
 export interface SlashCommand {
@@ -29,6 +30,12 @@ export interface IGuild extends mongoose.Document {
 export type GuildOption = keyof GuildOptions
 export interface BotEvent {
     name: string,
+    once?: boolean | false,
+    execute: (...args?) => void
+}
+
+export interface MusicPlayerEvent {
+    name: keyof GuildQueueEvents,
     once?: boolean | false,
     execute: (...args?) => void
 }

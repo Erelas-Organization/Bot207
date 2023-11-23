@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Collection, ActivityType, EmbedBuilder } from "discord.js";
+import { Client, GatewayIntentBits, Collection, ActivityType } from "discord.js";
 import { Player } from "discord-player";
 const { Guilds, MessageContent, GuildMessages, GuildMembers, GuildMessageReactions, GuildVoiceStates } = GatewayIntentBits;
 const client = new Client({ intents: [Guilds, MessageContent, GuildMessages, GuildMembers, GuildMessageReactions, GuildVoiceStates] });
@@ -18,7 +18,12 @@ const handlersDir = join(__dirname, "./handlers");
 async function loadHandlers() {
     const handlers = await fsPromises.readdir(handlersDir);
     await Promise.all(handlers.map(async handler => {
-        if (handler.endsWith(".js")) {
+        if(handler === "PlayerEvent.js") {
+            const handlerPath = join(handlersDir, handler);
+            const importedHandler = await import(handlerPath);
+            importedHandler.default(player);
+        }
+        if (handler.endsWith(".js") && handler !== "PlayerEvent.js") {
             const handlerPath = join(handlersDir, handler);
             const importedHandler = await import(handlerPath);
             importedHandler.default(client);
@@ -27,17 +32,12 @@ async function loadHandlers() {
 }
 
 async function loadPlayerExtractors() {
-    await player.extractors.loadDefault();   
+    await player.extractors.loadDefault();
 }
 
 loadPlayerExtractors().then(()=>{
     console.log("Player Extractors loaded")
 })
-
-player.events.on('playerStart', (queue, track) => {
-    const embed = new EmbedBuilder().setTitle("Now playing - " + track.title).setDescription(track.author).addFields({name: "\u200b", value: "`"+ track.duration +"`"}).setThumbnail(track.thumbnail)
-    queue.metadata.channel.send({embeds: [embed]});
-});
 
 client.on('ready', () => {
     if (client.user) {
