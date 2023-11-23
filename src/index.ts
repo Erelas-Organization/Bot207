@@ -5,26 +5,26 @@ const client = new Client({ intents: [Guilds, MessageContent, GuildMessages, Gui
 const player = new Player(client);
 import { Command, SlashCommand } from "./types";
 import { config } from "dotenv";
-import { promises as fsPromises } from "fs";
-import { join } from "path";
+import { promises as fsPromises } from "node:fs";
+import { join } from "node:path";
 config();
 
 client.slashCommands = new Collection<string, SlashCommand>();
 client.commands = new Collection<string, Command>();
 client.cooldowns = new Collection<string, number>();
 
-const handlersDir = join(__dirname, "./handlers");
+const handlersDirectory = join(__dirname, "./handlers");
 
 async function loadHandlers() {
-    const handlers = await fsPromises.readdir(handlersDir);
+    const handlers = await fsPromises.readdir(handlersDirectory);
     await Promise.all(handlers.map(async handler => {
         if(handler === "PlayerEvent.js") {
-            const handlerPath = join(handlersDir, handler);
+            const handlerPath = join(handlersDirectory, handler);
             const importedHandler = await import(handlerPath);
             importedHandler.default(player);
         }
         if (handler.endsWith(".js") && handler !== "PlayerEvent.js") {
-            const handlerPath = join(handlersDir, handler);
+            const handlerPath = join(handlersDirectory, handler);
             const importedHandler = await import(handlerPath);
             importedHandler.default(client);
         }

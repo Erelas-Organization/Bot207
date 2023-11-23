@@ -10,9 +10,9 @@ const command : Command = {
         try {
             const response = await axios.post('https://api.waifu.pics/many/sfw/slap', data);
             const imageFiles: string[] = response.data.files;
-            for(let i = 0; i < 5; ++i){        
+            for(let index = 0; index < 5; ++index){        
             const embed = new EmbedBuilder()
-                .setImage(`${imageFiles[i]}?width=200&height=200`)
+                .setImage(`${imageFiles[index]}?width=200&height=200`)
                 .setTitle("SLAP")
               message.channel.send({ embeds: [embed] });
             }

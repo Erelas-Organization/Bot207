@@ -17,18 +17,13 @@ const command: Command = {
       `Vallah Bilah <@${mentionedUser?.user.id}> mach nicht diesen. `
     ];
       const randomDescription = rndDescriptions[Math.floor(Math.random() * rndDescriptions.length)];
-      let embed: EmbedBuilder;
-      if (mentionedUser) {
-        embed = new EmbedBuilder()
+      const embed: EmbedBuilder = mentionedUser ? new EmbedBuilder()
           .setImage(`${imageUrl}?width=400&height=300`)
-          .setDescription(randomDescription);
-      } else {
-        embed = new EmbedBuilder()
+          .setDescription(randomDescription) : new EmbedBuilder()
           .setImage(`${imageUrl}?width=400&height=300`)
           .setDescription(`<@${author?.id}> is cringing.`);
-      }
       message.channel.send({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       message.channel.send("An error occurred while fetching the cringe image.");
     }
   },

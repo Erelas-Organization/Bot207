@@ -1,5 +1,8 @@
 {
     "name": "discordjs-v14-template-ts",
+    "eslintConfig": {
+		"extends": "plugin:unicorn/recommended"
+	},
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
@@ -32,6 +35,7 @@
         "@typescript-eslint/eslint-plugin": "^6.12.0",
         "@typescript-eslint/parser": "^6.12.0",
         "eslint": "^8.54.0",
+        "eslint-plugin-unicorn": "^49.0.0",
         "husky": "^8.0.0",
         "typescript": "^4.8.2"
     },

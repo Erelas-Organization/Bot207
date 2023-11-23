@@ -13,7 +13,7 @@ const command: SlashCommand = {
       .setDescription(`Number of Reactions: ${reactionCount}`)
 
       const message = await interaction.reply({embeds: [embed], fetchReply:true});
-      const collector = message.createReactionCollector({time: 10000});
+      const collector = message.createReactionCollector({time: 10_000});
       
       collector.on('collect', () => {
         reactionCount++;

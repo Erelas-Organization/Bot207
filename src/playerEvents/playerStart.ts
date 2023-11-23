@@ -12,7 +12,7 @@ const event: MusicPlayerEvent = {
         const embed = new EmbedBuilder()
         .setTitle("Now playing - " + track.title)
         .setDescription(track.author)
-        .addFields({name: "\u200b", value: "`"+ track.duration +"`"})
+        .addFields({name: "\u200B", value: "`"+ track.duration +"`"})
         .setThumbnail(track.thumbnail)
         if(queue.history.nextTrack){
             embed.setFooter({ text: 'Up next: ' + queue.history.nextTrack.title, iconURL: queue.history.nextTrack.thumbnail })
@@ -33,35 +33,42 @@ const event: MusicPlayerEvent = {
             collector.on('collect', (reaction: MessageReaction, user: User) => {
                 if(user.bot || !queue || !queueHistory) return;
                 switch(reaction.emoji.name){
-                    case '⏮️':
+                    case '⏮️': {
                         if(queueHistory.previousTrack){
                         queueHistory.back();
                         collector.stop();
                     }
                         break;
-                    case '⏯️':
+                    }
+                    case '⏯️': {
                         queue.node.setPaused(!queue.node.isPaused());
                         break;
-                    case '⏹️':
+                    }
+                    case '⏹️': {
                         queue.node.stop();
                         collector.stop();
                         break;
-                    case '⏭️':
+                    }
+                    case '⏭️': {
                         if(queueHistory.nextTrack) {
                             console.log("Skipping to " + queueHistory.nextTrack.title)
                             queueHistory.next();
                             collector.stop();
                         }
                         break;
-                    case '🔀':
+                    }
+                    case '🔀': {
                         queue.tracks.shuffle();
                         break;
-                    case '🔁':
+                    }
+                    case '🔁': {
                         queue.setRepeatMode(2);
                         break;
-                    case '🔂':
+                    }
+                    case '🔂': {
                         queue.setRepeatMode(1);
                         break;
+                    }
                 }
             })
     }

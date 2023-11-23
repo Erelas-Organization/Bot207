@@ -9,16 +9,11 @@ const command : Command = {
             const imageUrl = response.data.results[0].url;
             const author = message.author;
             const mentionedUser = message.mentions.members?.first();
-            let embed: EmbedBuilder;
-            if(mentionedUser){
-              embed = new EmbedBuilder()
+            const embed: EmbedBuilder = mentionedUser ? new EmbedBuilder()
                 .setImage(`${imageUrl}?width=400&height=300`)
-                .setDescription(`<@${author?.id}> dances with <@${mentionedUser?.user.id}>`);
-          }else{
-            embed = new EmbedBuilder()
+                .setDescription(`<@${author?.id}> dances with <@${mentionedUser?.user.id}>`) : new EmbedBuilder()
             .setImage(`${imageUrl}?width=400&height=300`)
-            .setDescription(`<@${author?.id}> is dancing.`);
-          }     
+            .setDescription(`<@${author?.id}> is dancing.`);     
           message.channel.send({ embeds: [embed] });
           } catch (error) {
             message.channel.send(JSON.stringify(error));

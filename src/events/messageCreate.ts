@@ -8,7 +8,7 @@ const event: BotEvent = {
     execute: async (message: Message) => {
         if (!message.member || message.member.user.bot) return;
         if (!message.guild) return;
-        let prefix = process.env.PREFIX
+        let prefix = process.env.PREFIX || "!";
         if (mongoose.connection.readyState === 1) {
             const guildPrefix = await getGuildOption(message.guild, "prefix") 
                 if (guildPrefix) prefix = guildPrefix;
@@ -17,11 +17,11 @@ const event: BotEvent = {
         if (!message.content.startsWith(prefix)) return;
         if (message.channel.type !== ChannelType.GuildText) return;
 
-        const args = message.content.substring(prefix.length).split(" ")
-        let command = message.client.commands.get(args[0])
+        const arguments_ = message.content.slice(prefix.length).split(" ")
+        let command = message.client.commands.get(arguments_[0])
 
         if (!command) {
-            const commandFromAlias = message.client.commands.find((command) => command.aliases.includes(args[0]))
+            const commandFromAlias = message.client.commands.find((command) => command.aliases.includes(arguments_[0]))
             if (commandFromAlias) command = commandFromAlias
             else return;
         }
@@ -56,7 +56,7 @@ const event: BotEvent = {
             message.client.cooldowns.set(`${command.name}-${message.member.user.username}`, Date.now() + command.cooldown * 1000)
         }
 
-        command.execute(message, args)
+        command.execute(message, arguments_)
     }
 }
 

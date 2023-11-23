@@ -41,9 +41,9 @@ const command: SlashCommand = {
         .setTitle("Loading " + track.title)
         return interaction.followUp({embeds: [embed]});
       }
-    } catch (e) {
+    } catch (error) {
         // let's return error if something failed
-        return interaction.followUp(`Something went wrong: ${e}`);
+        return interaction.followUp(`Something went wrong: ${error}`);
     }
 
   },

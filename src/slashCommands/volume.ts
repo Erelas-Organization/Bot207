@@ -22,9 +22,9 @@ const command: SlashCommand = {
         const volume = interaction.options.getNumber('volume', true);
         queue?.node.setVolume(volume);
         return interaction.reply(`Volume set to ${volume}`);
-    } catch (e) {
+    } catch (error) {
         // let's return error if something failed
-        return interaction.reply(`Something went wrong: ${e}`);
+        return interaction.reply(`Something went wrong: ${error}`);
     }
 
   },

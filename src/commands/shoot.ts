@@ -9,16 +9,11 @@ const command : Command = {
             const imageUrl = response.data.results[0].url;
             const author = message.author;
             const mentionedUser = message.mentions.members?.first();
-            let embed: EmbedBuilder;
-            if(mentionedUser){
-              embed = new EmbedBuilder()
+            const embed: EmbedBuilder = mentionedUser ? new EmbedBuilder()
                 .setImage(`${imageUrl}?width=400&height=300`)
-                .setDescription(`<@${author?.id}> shoots <@${mentionedUser?.user.id}>`);
-          }else{
-            embed = new EmbedBuilder()
+                .setDescription(`<@${author?.id}> shoots <@${mentionedUser?.user.id}>`) : new EmbedBuilder()
             .setImage(`${imageUrl}?width=400&height=300`)
-            .setDescription("PEW PEW PEW");
-          }     
+            .setDescription("PEW PEW PEW");     
           message.channel.send({ embeds: [embed] });
           } catch (error) {
             message.channel.send(JSON.stringify(error));
