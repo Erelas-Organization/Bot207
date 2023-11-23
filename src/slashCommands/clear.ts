@@ -14,7 +14,7 @@ const ClearCommand : SlashCommand = {
     })
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
     execute: interaction => {
-        let messageCount = Number(interaction.options.get("messagecount")?.value)
+        const messageCount = Number(interaction.options.get("messagecount")?.value)
         interaction.channel?.messages.fetch({limit: messageCount})
         .then(async msgs => {
             if(interaction.channel?.type === ChannelType.DM) return;

@@ -1,19 +1,23 @@
-import { Message, EmbedBuilder,  PermissionFlagsBits } from 'discord.js';
+import { Message, EmbedBuilder } from 'discord.js';
 import { Command } from '../types';
 import { join } from "path";
-import { readdirSync } from "fs";
+import { promises as fsPromises } from "fs";
+
 const helpCommand: Command = {
   name: 'help',
-  execute: (message: Message, args: string[]) => {
-    let commandsDir = join(__dirname, "../commands"); 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  execute: async (message: Message, args: string[]) => { // Marked as async
+    const commandsDir = join(__dirname, "../commands"); 
+    const files = await fsPromises.readdir(commandsDir);
     const commands: Command[] = [];
 
-    readdirSync(commandsDir).forEach(file => {
+    await Promise.all(files.map(async file => {
       if (file.endsWith('.ts') || file.endsWith('.js')) {
-        let command : Command = require(`${commandsDir}/${file}`).default
+        const filePath = join(commandsDir, file);
+        const command: Command = (await import(filePath)).default;
         commands.push(command);
       }
-    });
+    }));
 
     const embed = new EmbedBuilder();
     embed.setTitle('Bot Commands')
@@ -21,7 +25,7 @@ const helpCommand: Command = {
 
     const commandNames = commands.map((command) => `\`${command.name}\``).join(', ');
     embed.setDescription(`List of available commands:\n\n${commandNames}\n`);
-    message.channel.send({ embeds: [embed] });
+    await message.channel.send({ embeds: [embed] });
   },
   cooldown: 0,
   aliases: [],

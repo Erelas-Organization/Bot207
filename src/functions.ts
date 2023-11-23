@@ -1,5 +1,5 @@
 import chalk from "chalk"
-import { Guild, GuildMember, PermissionFlagsBits, PermissionResolvable, PermissionsBitField, TextChannel } from "discord.js"
+import { Guild, GuildMember, PermissionFlagsBits, PermissionResolvable, TextChannel } from "discord.js"
 import GuildDB from "./schemas/Guild"
 import { GuildOption } from "./types"
 import mongoose from "mongoose";
@@ -14,12 +14,13 @@ const themeColors = {
 
 export const getThemeColor = (color: colorType) => Number(`0x${themeColors[color].substring(1)}`)
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const color = (color: colorType, message: any) => {
     return chalk.hex(themeColors[color])(message)
 }
 
 export const checkPermissions = (member: GuildMember, permissions: Array<PermissionResolvable>) => {
-    let neededPermissions: PermissionResolvable[] = []
+    const neededPermissions: PermissionResolvable[] = []
     permissions.forEach(permission => {
         if (!member.permissions.has(permission)) neededPermissions.push(permission)
     })
@@ -38,14 +39,15 @@ export const sendTimedMessage = (message: string, channel: TextChannel, duration
 
 export const getGuildOption = async (guild: Guild, option: GuildOption) => {
     if (mongoose.connection.readyState === 0) throw new Error("Database not connected.")
-    let foundGuild = await GuildDB.findOne({ guildID: guild.id })
+    const foundGuild = await GuildDB.findOne({ guildID: guild.id })
     if (!foundGuild) return null;
     return foundGuild.options[option]
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const setGuildOption = async (guild: Guild, option: GuildOption, value: any) => {
     if (mongoose.connection.readyState === 0) throw new Error("Database not connected.")
-    let foundGuild = await GuildDB.findOne({ guildID: guild.id })
+    const foundGuild = await GuildDB.findOne({ guildID: guild.id })
     if (!foundGuild) return null;
     foundGuild.options[option] = value
     foundGuild.save()
