@@ -1,6 +1,8 @@
-import { Client, GatewayIntentBits, Collection, ActivityType } from "discord.js";
-const { Guilds, MessageContent, GuildMessages, GuildMembers } = GatewayIntentBits;
-const client = new Client({ intents: [Guilds, MessageContent, GuildMessages, GuildMembers] });
+import { Client, GatewayIntentBits, Collection, ActivityType, EmbedBuilder } from "discord.js";
+import { Player } from "discord-player";
+const { Guilds, MessageContent, GuildMessages, GuildMembers, GuildVoiceStates } = GatewayIntentBits;
+const client = new Client({ intents: [Guilds, MessageContent, GuildMessages, GuildMembers, GuildVoiceStates] });
+const player = new Player(client);
 import { Command, SlashCommand } from "./types";
 import { config } from "dotenv";
 import { promises as fsPromises } from "fs";
@@ -23,6 +25,19 @@ async function loadHandlers() {
         }
     }));
 }
+
+async function loadPlayerExtractors() {
+    await player.extractors.loadDefault();   
+}
+
+loadPlayerExtractors().then(()=>{
+    console.log("Player Extractors loaded")
+})
+
+player.events.on('playerStart', (queue, track) => {
+    const embed = new EmbedBuilder().setTitle("Now playing - " + track.title).setDescription(track.author).addFields({name: "\u200b", value: "`"+ track.duration +"`"}).setThumbnail(track.thumbnail)
+    queue.metadata.channel.send({embeds: [embed]});
+});
 
 client.on('ready', () => {
     if (client.user) {
