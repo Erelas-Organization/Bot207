@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+message="$(cat $1)"
+requiredPattern="^(add|remove|cut|fix|bump|make|start|stop|refactor|reformat|optimise|document|merge|move|Merge) .*"
+
+# Determine the OS
+if [ "$(uname)" == "Darwin" ]; then
+    # macOS
+    match=$(echo "$message" | egrep "$requiredPattern")
+elif [ "$(uname)" == "Linux" ]; then
+    # Linux
+    match=$(echo "$message" | grep -P "$requiredPattern")
+elif [ "$OS" == "Windows_NT" ]; then
+    # Windows, assuming using Git Bash
+    match=$(echo "$message" | grep -P "$requiredPattern")
+else
+    echo "Unknown OS"
+    exit 1
+fi
+
+if [ -z "$match" ]; then
+  echo "-"
+  echo "-"
+  echo "-"
+  echo "🚨 Wrong commit message! 😕"
+  echo "The commit message must have this format:"
+  echo "<verb in present tense> <what was done>"
+  echo "Allowed verbs in present tense: add, remove, cut, fix, bump, make, start, stop, refactor, reformat, optimise, document, merge"
+  echo "Example:    add login button"
+  echo "-"
+  echo "Your commit message was:"
+  echo $message
+  echo "-"
+  echo "For more information, check script in .husky/commit-msg"
+  echo "-"
+  exit 1
+fi
