@@ -1,7 +1,7 @@
 import { Client, GatewayIntentBits, Collection, ActivityType, EmbedBuilder } from "discord.js";
 import { Player } from "discord-player";
-const { Guilds, MessageContent, GuildMessages, GuildMembers, GuildVoiceStates } = GatewayIntentBits;
-const client = new Client({ intents: [Guilds, MessageContent, GuildMessages, GuildMembers, GuildVoiceStates] });
+const { Guilds, MessageContent, GuildMessages, GuildMembers, GuildMessageReactions, GuildVoiceStates } = GatewayIntentBits;
+const client = new Client({ intents: [Guilds, MessageContent, GuildMessages, GuildMembers, GuildMessageReactions, GuildVoiceStates] });
 const player = new Player(client);
 import { Command, SlashCommand } from "./types";
 import { config } from "dotenv";
