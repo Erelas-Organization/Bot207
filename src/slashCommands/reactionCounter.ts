@@ -1,7 +1,5 @@
 import { SlashCommandBuilder, EmbedBuilder} from "discord.js";
-import { getThemeColor } from "../functions";
 import { SlashCommand } from "../types";
-import {CollectorFilter, MessageReaction, User } from "discord.js";
 
 const command: SlashCommand = {
   command: new SlashCommandBuilder()
@@ -17,7 +15,7 @@ const command: SlashCommand = {
       const message = await interaction.reply({embeds: [embed], fetchReply:true});
       const collector = message.createReactionCollector({time: 10000});
       
-      collector.on('collect', (reaction:MessageReaction, user:User) => {
+      collector.on('collect', () => {
         reactionCount++;
         message.edit({embeds: [embed.setDescription(`Total Reactions: ${reactionCount}`)]})
       })
