@@ -7,7 +7,7 @@ const event: MusicPlayerEvent = {
     execute: async (queue: GuildQueue<ChatInputCommandInteraction>, track: Track) => {
         const metadata = queue.metadata;
         const message = await metadata.fetchReply()
-        console.log("audioTracksAdd event fired for: " + track.title + " in " + queue.guild.name)
+        console.log("audioTrackAdd event fired for: " + track.title + " in " + queue.guild.name)
         if(!message) {
             return console.log("Couldnt find the message to edit");
         }
