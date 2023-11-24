@@ -14,8 +14,9 @@ const event: MusicPlayerEvent = {
         const embed = new EmbedBuilder()
         .setTitle("Now playing - " + track.title)
         .setDescription(track.author)
-        .addFields({name: "\u200B", value: "`"+ track.duration +"`"})
+        .addFields({name:"\u200B", value:"\u0020"}, {name:"Volume", value:"🔊 🔲🔲🔲🔲🔲🔲🔲🔲🔲🔲"}, {name:"\u200B", value:"༼ ͡° ͜ʖ ͡°༽᲼᲼᲼᲼᲼᲼᲼᲼᲼᲼༼ ͡• ͜໒ ͡• ༽"})
         .setThumbnail(track.thumbnail)
+        .setColor("Green")
         if(queue.history.nextTrack){
             embed.setFooter({ text: 'Up next: ' + queue.history.nextTrack.title, iconURL: queue.history.nextTrack.thumbnail })
           }
