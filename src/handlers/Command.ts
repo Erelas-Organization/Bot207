@@ -1,7 +1,7 @@
 import { Client, Routes, SlashCommandBuilder } from "discord.js";
 import { REST } from "@discordjs/rest";
-import { promises as fsPromises } from "fs";
-import { join } from "path";
+import { promises as fsPromises } from "node:fs";
+import { join } from "node:path";
 import { color } from "../functions";
 import { Command, SlashCommand } from "../types";
 
@@ -9,15 +9,16 @@ module.exports = async (client : Client) => {
     const slashCommands : SlashCommandBuilder[] = [];
     const commands : Command[] = [];
 
-    const slashCommandsDir = join(__dirname, "../slashCommands");
-    const commandsDir = join(__dirname, "../commands");
+    const slashCommandsDirectory = join(__dirname, "../slashCommands");
+    const commandsDirectory = join(__dirname, "../commands");
 
     const loadSlashCommands = async () => {
-        const files = await fsPromises.readdir(slashCommandsDir);
+        const files = await fsPromises.readdir(slashCommandsDirectory);
         await Promise.all(files.map(async file => {
             if (file.endsWith(".js")) {
-                const filePath = join(slashCommandsDir, file);
-                const command : SlashCommand = (await import(filePath)).default;
+                const filePath = join(slashCommandsDirectory, file);
+                const fileImport = await import(filePath);
+                const command : SlashCommand = fileImport.default;
                 slashCommands.push(command.command);
                 client.slashCommands.set(command.command.name, command);
             }
@@ -25,11 +26,12 @@ module.exports = async (client : Client) => {
     };
 
     const loadCommands = async () => {
-        const files = await fsPromises.readdir(commandsDir);
+        const files = await fsPromises.readdir(commandsDirectory);
         await Promise.all(files.map(async file => {
             if (file.endsWith(".js")) {
-                const filePath = join(commandsDir, file);
-                const command : Command = (await import(filePath)).default;
+                const filePath = join(commandsDirectory, file);
+                const fileImport = await import(filePath);
+                const command : Command = fileImport.default;
                 commands.push(command);
                 client.commands.set(command.name, command);
             }
@@ -39,6 +41,7 @@ module.exports = async (client : Client) => {
     await loadSlashCommands();
     await loadCommands();
 
+    if(process.env.TOKEN && process.env.CLIENT_ID){
     const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
 
     try {
@@ -49,7 +52,7 @@ module.exports = async (client : Client) => {
 
         console.log(color("text", `🔥 Successfully loaded ${color("variable", data.length)} slash command(s)`));
         console.log(color("text", `🔥 Successfully loaded ${color("variable", commands.length)} command(s)`));
-    } catch (e) {
-        console.error(e);
-    }
+    } catch (error) {
+        console.error(error);
+    }}
 };

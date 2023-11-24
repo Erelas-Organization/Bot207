@@ -1,4 +1,5 @@
 import { SlashCommandBuilder, Collection, PermissionResolvable, Message, AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js"
+import { GuildQueueEvents } from "discord-player";
 import mongoose from "mongoose"
 
 export interface SlashCommand {
@@ -10,7 +11,7 @@ export interface SlashCommand {
 
 export interface Command {
     name: string,
-    execute: (message: Message, args: Array<string>) => void,
+    execute: (message: Message, arguments_: Array<string>) => void,
     permissions: Array<PermissionResolvable>,
     aliases: Array<string>,
     cooldown?: number,
@@ -30,12 +31,18 @@ export type GuildOption = keyof GuildOptions
 export interface BotEvent {
     name: string,
     once?: boolean | false,
-    execute: (...args?) => void
+    execute: (...arguments_?) => void
+}
+
+export interface MusicPlayerEvent {
+    name: keyof GuildQueueEvents,
+    once?: boolean | false,
+    execute: (...arguments_?) => void
 }
 
 declare global {
     namespace NodeJS {
-        interface ProcessEnv {
+        interface ProcessEnvironment {
             TOKEN: string,
             CLIENT_ID: string,
             PREFIX: string,

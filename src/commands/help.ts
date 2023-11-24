@@ -1,20 +1,21 @@
 import { Message, EmbedBuilder } from 'discord.js';
 import { Command } from '../types';
-import { join } from "path";
-import { promises as fsPromises } from "fs";
+import { join } from "node:path";
+import { promises as fsPromises } from "node:fs";
 
 const helpCommand: Command = {
   name: 'help',
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  execute: async (message: Message, args: string[]) => { // Marked as async
-    const commandsDir = join(__dirname, "../commands"); 
-    const files = await fsPromises.readdir(commandsDir);
+  execute: async (message: Message, arguments_: string[]) => { // Marked as async
+    const commandsDirectory = join(__dirname, "../commands"); 
+    const files = await fsPromises.readdir(commandsDirectory);
     const commands: Command[] = [];
 
     await Promise.all(files.map(async file => {
       if (file.endsWith('.ts') || file.endsWith('.js')) {
-        const filePath = join(commandsDir, file);
-        const command: Command = (await import(filePath)).default;
+        const filePath = join(commandsDirectory, file);
+        const fileImport = await import(filePath);
+        const command: Command = fileImport.default;
         commands.push(command);
       }
     }));
