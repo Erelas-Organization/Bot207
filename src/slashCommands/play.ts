@@ -30,10 +30,10 @@ const command: SlashCommand = {
       if (player.queues.get(guild.id) && player.queues.get(guild.id)?.isPlaying) {
         const { track } = await player.play(channel, query);
         return interaction.followUp({content: track.title + " added to queue!", ephemeral: true});
-        } else{
+        } else {
           const { track } = await player.play(channel, query, {
             nodeOptions: {
-                volume: 20,
+                volume: 10,
                 metadata: interaction
             }
         });
@@ -42,7 +42,6 @@ const command: SlashCommand = {
         return interaction.followUp({embeds: [embed]});
       }
     } catch (error) {
-        // let's return error if something failed
         return interaction.followUp(`Something went wrong: ${error}`);
     }
 
