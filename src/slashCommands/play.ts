@@ -30,15 +30,15 @@ const command: SlashCommand = {
     await interaction.deferReply();
 
     try {
-      const { track } = await player.play(channel, query, {
+      const embed = new EmbedBuilder()
+        .setTitle("Loading Music bot...");
+      await interaction.followUp({ embeds: [embed] });
+      await player.play(channel, query, {
         nodeOptions: {
           volume: 10,
-          metadata: interaction
+          metadata: await interaction.fetchReply()
         }
       });
-      const embed = new EmbedBuilder()
-        .setTitle("Loading " + track.title);
-      return interaction.followUp({ embeds: [embed] });
     } catch (error) {
       return interaction.followUp(`Something went wrong: ${error}`);
     }

@@ -1,13 +1,12 @@
-import { ChatInputCommandInteraction, EmbedBuilder, MessageReaction, User} from "discord.js";
+import { EmbedBuilder, Message, MessageReaction, User} from "discord.js";
 import { MusicPlayerEvent } from "../types";
 import { GuildQueue, useHistory } from "discord-player";
 
 const event: MusicPlayerEvent = {
     name: "queueCreate",
-    execute: async (queue: GuildQueue<ChatInputCommandInteraction>) => {
+    execute: async (queue: GuildQueue<Message>) => {
         console.log("QueueCreate event fired")
-        const metadata = queue.metadata;
-        const message = await metadata.fetchReply()
+        const message = queue.metadata.channel.messages.cache.get(queue.metadata.id);
         const queueHistory = useHistory(queue);
         const embed = new EmbedBuilder()
         .setTitle("Intializing queue and controls...")
@@ -72,6 +71,12 @@ const event: MusicPlayerEvent = {
                     }
                     case '🔀': {
                         queue.tracks.shuffle();
+                        if(message.embeds.length > 0 && queue.history.nextTrack) {
+                            const oldEmbed = message.embeds[0];
+                            const newEmbed = new EmbedBuilder(oldEmbed.toJSON());
+                            newEmbed.setFooter({ text: 'Up next: ' + queue.history.nextTrack.title, iconURL: queue.history.nextTrack.thumbnail });
+                            message.edit({ embeds: [newEmbed] });
+                        }
                         break;
                     }
                     case '🔁': {
