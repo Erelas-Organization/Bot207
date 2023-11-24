@@ -30,6 +30,7 @@ jobs:
           cd /home/${{ secrets.USERNAME }}/Bot207/
           git pull origin main
           git status
+          npm pkg delete scripts.prepare
           npm install --only=prod
           npm run build
           pm2 restart Bot207
