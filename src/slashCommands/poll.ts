@@ -1,6 +1,27 @@
 import { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder} from "discord.js";
 import { SlashCommand } from "../types";
 
+
+const formatTime = (milliseconds:number) => {
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}m ${seconds}s`;
+}
+
+const updateFooter = (embed: EmbedBuilder, voteCounts: { [key: string]: number }, options: { [key: string]: string }, timeLeft: number, pollEnded: boolean = false) => {
+const voteStatus = Object.keys(voteCounts)
+    .filter(key => options[key])
+    .map(key => `${options[key]}: ${voteCounts[key]}`)
+    .join('\n');
+if (pollEnded) {
+    embed.setFooter({ text: voteStatus });
+} else {
+    const footerText = `Poll ends in: ${formatTime(timeLeft)}`;
+    embed.setFooter({ text: `${voteStatus}\n${footerText}` });
+}
+}
+
 const command: SlashCommand = {
     command: new SlashCommandBuilder()
       .setName("poll")
@@ -43,6 +64,8 @@ const command: SlashCommand = {
       .setDescription("Create a poll."),
       
       execute: async (interaction) => {
+
+        
         try {
           const options: { [key: string]: string } = {};
           const voteCounts: { [key: string]: number } = {};
@@ -66,13 +89,13 @@ const command: SlashCommand = {
         const endTime = Date.now() + duration;
 
         const buttons = [];
-        for (let i = 1; i <= 4; i++) {
-            const optionName = `option${i}`;
+        for (let index = 1; index <= 4; index++) {
+            const optionName = `option${index}`;
             const optionValue = options[optionName];
 
             if (optionValue) {
                 const button = new ButtonBuilder()
-                  .setCustomId(`option_${i}`)
+                  .setCustomId(`option_${index}`)
                   .setLabel(optionValue)
                   .setStyle(ButtonStyle.Primary);
       
@@ -128,7 +151,7 @@ const command: SlashCommand = {
         collector.on('end', async () => {
           clearInterval(countdownInterval);
           // Determine the highest vote count
-          let maxVotes = Math.max(...Object.values(voteCounts));
+          const maxVotes = Math.max(...Object.values(voteCounts));
 
           // Find all options with the highest vote count
           const winningOptions = Object.keys(voteCounts)
@@ -148,26 +171,6 @@ const command: SlashCommand = {
           updateFooter(embed, voteCounts, options, 0, true);
           await interaction.editReply({ embeds: [embed], components: [] });
           });
-
-      function formatTime(milliseconds:number):string {
-        const totalSeconds = Math.floor(milliseconds / 1000);
-        const minutes = Math.floor(totalSeconds / 60);
-        const seconds = totalSeconds % 60;
-        return `${minutes}m ${seconds}s`;
-    }
-
-    function updateFooter(embed: EmbedBuilder, voteCounts: { [key: string]: number }, options: { [key: string]: string }, timeLeft: number, pollEnded: boolean = false) {
-      let voteStatus = Object.keys(voteCounts)
-          .filter(key => options[key])
-          .map(key => `${options[key]}: ${voteCounts[key]}`)
-          .join('\n');
-      if (pollEnded) {
-          embed.setFooter({ text: voteStatus });
-      } else {
-          let footerText = `Poll ends in: ${formatTime(timeLeft)}`;
-          embed.setFooter({ text: `${voteStatus}\n${footerText}` });
-      }
-    }
       } catch (error) {
         console.error("Error", error);
         interaction.editReply({ content: "Something went wrong..." });
