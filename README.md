@@ -13,6 +13,7 @@ CLIENT_ID=YOURCLIENTID
 PREFIX=!
 MONGO_URI=YOUR MONGO CONNECTION STRING
 MONGO_DATABASE_NAME=YOUR DATABASE NAME
+GENIUS_API_KEY=GENIUS API KEY, FOR LYRCIS FETCHING
 ```
 - Open a terminal and install dependencies: `npm install`
 - Run the bot using: `npm run dev`
