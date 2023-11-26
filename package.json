@@ -20,6 +20,7 @@
         "@discordjs/rest": "^1.1.0",
         "@distube/ytdl-core": "^4.13.3",
         "@types/node": "^18.7.14",
+        "aki-api": "^6.0.9",
         "axios": "^1.6.2",
         "chalk": "^4.1.2",
         "cheerio": "^1.0.0-rc.12",
