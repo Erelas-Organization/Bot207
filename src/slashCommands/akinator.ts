@@ -14,85 +14,71 @@ const ClearCommand: SlashCommand = {
     .setName("akinator")
     .setDescription("Starts a new akinator game."),
   execute: async (interaction) => {
-    const yesButton = new ButtonBuilder()
-      .setCustomId("yes")
-      .setLabel("Yes")
-      .setStyle(ButtonStyle.Success);
-
-    const noButton = new ButtonBuilder()
-      .setCustomId("no")
-      .setLabel("No")
-      .setStyle(ButtonStyle.Danger);
-
-    const dontKnowButton = new ButtonBuilder()
-      .setCustomId("dontKnow")
-      .setLabel("Don't Know")
-      .setStyle(ButtonStyle.Primary);
-
-    const probablyButton = new ButtonBuilder()
-      .setCustomId("probably")
-      .setLabel("Probably")
-      .setStyle(ButtonStyle.Primary);
-
-    const probablyNotButton = new ButtonBuilder()
-      .setCustomId("probablyNot")
-      .setLabel("ProbablyNot")
-      .setStyle(ButtonStyle.Primary);
-
-    const buttonRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
-      yesButton,
-      noButton,
-      dontKnowButton,
-      probablyButton,
-      probablyNotButton
+    const buttons = ["yes", "no", "dontKnow", "probably", "probablyNot"].map(
+      (id) =>
+        new ButtonBuilder()
+          .setCustomId(id)
+          .setLabel(id.charAt(0).toUpperCase() + id.slice(1))
+          .setStyle(
+            id === "yes"
+              ? ButtonStyle.Success
+              : (id === "no"
+              ? ButtonStyle.Danger
+              : ButtonStyle.Primary)
+          )
     );
 
-    const answerAkinator = (aki: Aki, answer: number) => {
-      aki.step(answer).then((akiStep) => {
-        if (aki.progress >= 70 || aki.currentStep >= 78) {
-          console.log("WON");
-          aki.win().then((guess) => {
-            const character = guess.guesses[0];
-            interaction.editReply({
-              embeds: [
-                new EmbedBuilder()
-                  .setTitle("Akinator")
-                  .setDescription(
-                    `I think your character is ${character.name}!`
-                  )
-                  .setImage(character.absolute_picture_path),
-              ],
-              components: [],
-            });
-            collector.stop();
-            console.log("STOPPED");
-          });
-        } else {
-          interaction.editReply({
-            embeds: [embed.setDescription(akiStep.question)],
-          });
-        }
-      });
-    };
+    const buttonRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+      buttons
+    );
 
+    const answerAkinator = async (aki: Aki, answer: number) => {
+      const question = await aki.step(answer);
+
+      if (aki.progress >= 85 || aki.currentStep >= 78) {
+        const guess = await aki.win();
+        const character = guess.guesses[0];
+        await interaction.editReply({
+          embeds: [
+            new EmbedBuilder()
+              .setTitle("Akinator")
+              .setDescription(`I think your character is ${character.name}!`)
+              .setImage(character.absolute_picture_path),
+          ],
+          components: [],
+        });
+        collector.stop();
+      } else {
+        await interaction.editReply({
+          embeds: [embed.setDescription(question.question)],
+        });
+      }
+    };
     const embed = new EmbedBuilder()
       .setTitle("Akinator")
       .setDescription("Starting a new Akinator game...");
     const aki = new Aki({ region: "en", childMode: false });
     const response = await interaction.reply({
       embeds: [embed],
+    });
+    const akiUser = await interaction.user
+
+    const question = await aki.start();
+
+    interaction.editReply({
+      embeds: [embed.setDescription(question.question)],
       components: [buttonRow],
     });
-    await aki.start().then((akiStep) => {
-      interaction.editReply({
-        embeds: [embed.setDescription(akiStep.question)],
-      });
-    });
+
     const collector = response.createMessageComponentCollector({
       componentType: ComponentType.Button,
-      time: 60_000,
+      time: 15_000,
     });
     collector.on("collect", async (interaction) => {
+        if(interaction.user.id !== akiUser.id){
+            interaction.reply({content: "You did not start this game!", ephemeral: true});
+            return;
+        }
       switch (interaction.customId) {
         case "yes": {
           await answerAkinator(aki, 0);
@@ -115,7 +101,6 @@ const ClearCommand: SlashCommand = {
           break;
         }
       }
-      console.log("Button return");
       interaction.deferUpdate();
       return;
     });
