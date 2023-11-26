@@ -38,6 +38,7 @@ const ClearCommand: SlashCommand = {
       if (aki.progress >= 85 || aki.currentStep >= 78) {
         const guess = await aki.win();
         const character = guess.guesses[0];
+        console.log(character);
         await interaction.editReply({
           embeds: [
             new EmbedBuilder()
@@ -56,6 +57,7 @@ const ClearCommand: SlashCommand = {
     };
     const embed = new EmbedBuilder()
       .setTitle("Akinator")
+      .setThumbnail("https://play-lh.googleusercontent.com/rjX8LZCV-MaY3o927R59GkEwDOIRLGCXFphaOTeFFzNiYY6SQ4a-B_5t7eUPlGANrcw")
       .setDescription("Starting a new Akinator game...");
     const aki = new Aki({ region: "en", childMode: false });
     const response = await interaction.reply({
@@ -79,6 +81,7 @@ const ClearCommand: SlashCommand = {
             interaction.reply({content: "You did not start this game!", ephemeral: true});
             return;
         }
+        interaction.deferUpdate();
       switch (interaction.customId) {
         case "yes": {
           await answerAkinator(aki, 0);
@@ -101,7 +104,6 @@ const ClearCommand: SlashCommand = {
           break;
         }
       }
-      interaction.deferUpdate();
       return;
     });
   },
