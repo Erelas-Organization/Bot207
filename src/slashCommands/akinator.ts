@@ -72,7 +72,7 @@ const ClearCommand: SlashCommand = {
 
     const collector = response.createMessageComponentCollector({
       componentType: ComponentType.Button,
-      time: 15_000,
+      time: 900_000,
     });
     collector.on("collect", async (interaction) => {
         if(interaction.user.id !== akiUser.id){
