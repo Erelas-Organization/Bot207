@@ -1,6 +1,7 @@
 import { EmbedBuilder } from "discord.js";
 import { Command } from "../types";
 import axios from "axios";
+
 const command : Command = {
     name: "pickupline",
     execute: async (message) => {

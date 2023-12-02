@@ -6,13 +6,11 @@ const command : Command = {
     execute: async (message) => {
       try {
             const response = await axios.get("https://nekobot.xyz/api/image?type=hthigh");
-            console.log(response.data);
             const imageUrl = response.data.message;
-            console.log(imageUrl)
-              const embed = new EmbedBuilder()
-                .setDescription(`HTHIGH`)
-               embed.setImage(`${imageUrl}?width=800`);
-               message.channel.send({ embeds: [embed] });
+            const embed = new EmbedBuilder()
+              .setDescription(`HTHIGH`)
+              embed.setImage(`${imageUrl}?width=800`);
+            message.channel.send({ embeds: [embed] });
           } catch (error) {
             message.channel.send(JSON.stringify(error));
           }

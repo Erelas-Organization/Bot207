@@ -6,9 +6,7 @@ const command : Command = {
     execute: async (message) => {
       try {
             const response = await axios.get("https://nekobot.xyz/api/image?type=anal");
-            console.log(response.data);
             const imageUrl = response.data.message;
-            console.log(imageUrl)
               const embed = new EmbedBuilder()
               .setDescription(`ANAL HARAM`)
                embed.setImage(`${imageUrl}?width=800`);

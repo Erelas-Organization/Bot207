@@ -6,9 +6,7 @@ const command : Command = {
     execute: async (message) => {
       try {
             const response = await axios.get("https://nekobot.xyz/api/image?type=hanal");
-            console.log(response.data);
             const imageUrl = response.data.message;
-            console.log(imageUrl)
               const embed = new EmbedBuilder()
                 .setDescription(`HENTAI ANAL`)
                embed.setImage(`${imageUrl}?width=800`);

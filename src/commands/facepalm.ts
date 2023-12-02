@@ -9,7 +9,7 @@ const command : Command = {
             const imageUrl = response.data.results[0].url;
             const author = message.author;
             const mentionedUser = message.mentions.members?.first();
-            const  embed: EmbedBuilder = mentionedUser ? new EmbedBuilder()
+            const embed: EmbedBuilder = mentionedUser ? new EmbedBuilder()
                 .setImage(`${imageUrl}?width=400&height=300`)
                 .setDescription(`<@${author?.id}> facepalms at <@${mentionedUser?.user.id}>`) : new EmbedBuilder()
             .setImage(`${imageUrl}?width=400&height=300`);     

@@ -6,9 +6,7 @@ const command : Command = {
     execute: async (message) => {
       try {
             const response = await axios.get("https://cataas.com/cat?json=true");
-            console.log(response.data);
             const imageUrl = `https://cataas.com/cat/${response.data._id}`;
-            console.log(imageUrl)
               const embed = new EmbedBuilder()
               .setDescription(`EL GATOOO`)
                embed.setImage(`${imageUrl}?width=400&height=300`);

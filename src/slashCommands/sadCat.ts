@@ -1,5 +1,6 @@
-import { SlashCommandBuilder, EmbedBuilder} from "discord.js";
+import { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder} from "discord.js";
 import { SlashCommand } from "../types";
+import axios from "axios";
 
 const command: SlashCommand = {
     command: new SlashCommandBuilder()
@@ -18,9 +19,12 @@ const command: SlashCommand = {
             const text = interaction.options.getString("text");
             if(text) {
             const sadCatImageUrl = `https://api.popcat.xyz/sadcat?text=${encodeURIComponent(text)}`;
+            const response = await axios.get(sadCatImageUrl, { responseType: 'arraybuffer' });
+            const buffer = Buffer.from(response.data, 'binary');
+            const attachment = new AttachmentBuilder(buffer, { name: 'sadcat.png' });
             const embed = new EmbedBuilder()
-                .setImage(sadCatImageUrl);
-            await interaction.editReply({ embeds: [embed] });
+                .setImage('attachment://sadcat.png');
+            await interaction.editReply({ embeds: [embed], files: [attachment] });
             } else{
                 await interaction.editReply({ content: "Unable to retrieve the text" });
             }

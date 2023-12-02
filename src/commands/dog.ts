@@ -6,7 +6,6 @@ const command : Command = {
     execute: async (message) => {
       try {
             const response = await axios.get("https://random.dog/woof.json");
-            console.log(response.data);
             const imageUrl = response.data.url;
             const isVideo = imageUrl.endsWith('.mp4');
               if (isVideo) {
@@ -18,7 +17,6 @@ const command : Command = {
                embed.setImage(`${imageUrl}?width=400&height=300`);
                message.channel.send({ embeds: [embed] });
             }
-
           } catch (error) {
             message.channel.send(JSON.stringify(error));
           }

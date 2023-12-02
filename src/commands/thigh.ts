@@ -6,9 +6,7 @@ const command : Command = {
     execute: async (message) => {
       try {
             const response = await axios.get("https://nekobot.xyz/api/image?type=thigh");
-            console.log(response.data);
             const imageUrl = response.data.message;
-            console.log(imageUrl)
               const embed = new EmbedBuilder()
                 .setDescription(`THIGH`)
                embed.setImage(`${imageUrl}?width=800`);

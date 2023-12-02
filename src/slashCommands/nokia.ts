@@ -1,5 +1,6 @@
-import { SlashCommandBuilder, EmbedBuilder} from "discord.js";
+import { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder} from "discord.js";
 import { SlashCommand } from "../types";
+import axios from "axios";
 
 const command: SlashCommand = {
     command: new SlashCommandBuilder()
@@ -16,13 +17,14 @@ const command: SlashCommand = {
         try {
             await interaction.deferReply();
             const imageUrl = interaction.options.getString("imageurl");
-            console.log(imageUrl)
             if(imageUrl || imageUrl?.startsWith("http")) {
                 const nokiaImageUrl = `https://api.popcat.xyz/nokia?image=${encodeURIComponent(imageUrl)}`;
-                console.log(nokiaImageUrl)
+                const response = await axios.get(nokiaImageUrl, { responseType: 'arraybuffer' });
+                const buffer = Buffer.from(response.data, 'binary');
+                const attachment = new AttachmentBuilder(buffer, { name: 'nokia.png' });
                 const embed = new EmbedBuilder()
-                    .setImage(nokiaImageUrl);
-                 await interaction.editReply({ embeds: [embed] });
+                    .setImage('attachment://nokia.png');
+                 await interaction.editReply({ embeds: [embed], files: [attachment] });
             } else {
                 await interaction.editReply({ content: "Unable to retrieve the text" });
             }

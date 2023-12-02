@@ -1,6 +1,6 @@
-import { SlashCommandBuilder, EmbedBuilder} from "discord.js";
+import { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder} from "discord.js";
 import { SlashCommand } from "../types";
-
+import axios from "axios";
 
 const command: SlashCommand = {
     command: new SlashCommandBuilder()
@@ -40,10 +40,13 @@ const command: SlashCommand = {
             }
         if (finalImageUrl) {
             const jailImageUrl = `https://api.popcat.xyz/jail?image=${encodeURIComponent(finalImageUrl)}`;
+            const response = await axios.get(jailImageUrl, { responseType: 'arraybuffer' });
+            const buffer = Buffer.from(response.data, 'binary');
+            const attachment = new AttachmentBuilder(buffer, { name: 'jail.png' });
             const embed = new EmbedBuilder()
                 .setTitle("YOU ARE IN JAIL")
-                .setImage(jailImageUrl);
-            await interaction.editReply({ embeds: [embed] });
+                .setImage('attachment://jail.png');
+            await interaction.editReply({ embeds: [embed], files: [attachment] });
         } else {
             await interaction.editReply({ content: "Unable to retrieve the image URL." });
         }        
