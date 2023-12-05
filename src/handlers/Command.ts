@@ -12,34 +12,30 @@ module.exports = async (client : Client) => {
     const slashCommandsDirectory = join(__dirname, "../slashCommands");
     const commandsDirectory = join(__dirname, "../commands");
 
-    const loadSlashCommands = async () => {
-        const files = await fsPromises.readdir(slashCommandsDirectory);
-        await Promise.all(files.map(async file => {
-            if (file.endsWith(".js")) {
-                const filePath = join(slashCommandsDirectory, file);
-                const fileImport = await import(filePath);
-                const command : SlashCommand = fileImport.default;
+// Function to recursively load commands from a directory
+async function loadCommandsFromDirectory(directory: string) {
+    const files = await fsPromises.readdir(directory, { withFileTypes: true });
+    for (const file of files) {
+        if (file.isDirectory()) {
+            await loadCommandsFromDirectory(join(directory, file.name));
+        } else if (file.name.endsWith(".js") || file.name.endsWith(".ts")) {
+            const filePath = join(directory, file.name);
+            const fileImport = await import(filePath);
+            if (directory.includes('slashCommands')) {
+                const command: SlashCommand = fileImport.default;
                 slashCommands.push(command.command);
                 client.slashCommands.set(command.command.name, command);
-            }
-        }));
-    };
-
-    const loadCommands = async () => {
-        const files = await fsPromises.readdir(commandsDirectory);
-        await Promise.all(files.map(async file => {
-            if (file.endsWith(".js")) {
-                const filePath = join(commandsDirectory, file);
-                const fileImport = await import(filePath);
-                const command : Command = fileImport.default;
+            } else {
+                const command: Command = fileImport.default;
                 commands.push(command);
                 client.commands.set(command.name, command);
             }
-        }));
-    };
+        }
+    }
+}
 
-    await loadSlashCommands();
-    await loadCommands();
+await loadCommandsFromDirectory(commandsDirectory);
+await loadCommandsFromDirectory(slashCommandsDirectory);
 
     if(process.env.TOKEN && process.env.CLIENT_ID){
     const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
