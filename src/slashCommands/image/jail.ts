@@ -25,8 +25,10 @@ const command: SlashCommand = {
             const user = interaction.options.getUser("user");
             const imageUrl = interaction.options.getString("imageurl");
             let finalImageUrl = imageUrl;
+            let member;
 
             if (user) {
+                member = await interaction.guild?.members.fetch(user.id);
                 const avatarUrl = user.avatarURL();
                 if (avatarUrl) {
                     finalImageUrl = avatarUrl.replace(/\.\w+$/, '.jpg');
@@ -38,13 +40,14 @@ const command: SlashCommand = {
                 await interaction.editReply({ content: "Please provide a valid image URL or a user ID." });
                 return;
             }
+            
         if (finalImageUrl) {
             const jailImageUrl = `https://api.popcat.xyz/jail?image=${encodeURIComponent(finalImageUrl)}`;
             const response = await axios.get(jailImageUrl, { responseType: 'arraybuffer' });
             const buffer = Buffer.from(response.data, 'binary');
             const attachment = new AttachmentBuilder(buffer, { name: 'jail.png' });
             const embed = new EmbedBuilder()
-                .setTitle("YOU ARE IN JAIL")
+                .setTitle(`You are in jail ${member?.nickname || member?.displayName}!`)
                 .setImage('attachment://jail.png');
             await interaction.editReply({ embeds: [embed], files: [attachment] });
         } else {
